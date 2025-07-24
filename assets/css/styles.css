@@ -51,17 +51,22 @@ body {
 /* Right Panel */
 .right-panel {
     flex: 1;
-    background: var(--primary-color);
+    background: var(--background-light );
     position: relative;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .hero-image {
-    width: 100%;
-    height: 100%;
+    width: 80%;
+    height: 80%;
     object-fit: cover;
     transition: transform 0.8s ease;
     filter: brightness(0.9) contrast(1.1);
+    display: block;
+    margin: auto;
 }
 
 .hero-image:hover {
@@ -70,23 +75,27 @@ body {
 
 /* Content Styles */
 .content {
-    max-width: 500px;
+    max-width: 900px;
     animation: fadeInUp 1s ease-out;
 }
 
 .logo {
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 700;
     letter-spacing: -0.5px;
-    margin-bottom: 40px;
+    position: relative;
+    top: -100px;
+    margin-bottom: 20px;
     color: var(--primary-color);
     font-family: var(--font-primary);
 }
 
 .tagline {
-    font-size: 48px;
+    font-size: 24px;
     font-weight: 300;
     line-height: 1.2;
+    position: relative;
+    top: -100px;
     margin-bottom: 30px;
     color: var(--primary-color);
     letter-spacing: -1px;
@@ -98,6 +107,7 @@ body {
     margin-bottom: 40px;
     color: var(--secondary-color);
     font-weight: 400;
+    text-align: justify;
 }
 
 /* Buttons */
@@ -167,10 +177,13 @@ body {
 /* Social Links */
 .social-links {
     position: absolute;
-    bottom: 60px;
-    left: 60px;
+    top: 60px;
+    right: calc(10%);
     display: flex;
-    gap: 20px;
+    flex-direction: row;
+    gap: 16px;
+    height: auto;
+    justify-content: flex-end;
 }
 
 .social-link {

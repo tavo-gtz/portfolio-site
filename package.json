@@ -1,10 +1,64 @@
 {
-  "name": "portfolio-site",
+  "name": "toledo-portfolio-template",
   "version": "1.0.0",
+  "description": "A minimalist, responsive portfolio website inspired by the Squarespace Toledo template",
+  "main": "index.html",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "start": "npx serve .",
+    "dev": "npx browser-sync start --server --files '*.html, assets/**/*'",
+    "build": "npm run optimize",
+    "optimize": "npm run optimize:images && npm run optimize:css && npm run optimize:js",
+    "optimize:images": "echo 'Image optimization requires manual setup'",
+    "optimize:css": "npx clean-css-cli assets/css/styles.css -o assets/css/styles.min.css",
+    "optimize:js": "npx terser assets/js/main.js -o assets/js/main.min.js",
+    "lint": "npm run lint:html && npm run lint:css && npm run lint:js",
+    "lint:html": "npx html-validate index.html",
+    "lint:css": "npx stylelint assets/css/*.css",
+    "lint:js": "npx eslint assets/js/*.js",
+    "test": "npm run lint",
+    "deploy": "npm run build && gh-pages -d .",
+    "serve:prod": "npx serve . -s"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/your-portfolio.git"
+  },
+  "keywords": [
+    "portfolio",
+    "template",
+    "responsive",
+    "minimalist",
+    "toledo",
+    "squarespace",
+    "html",
+    "css",
+    "javascript",
+    "github-pages"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/your-portfolio/issues"
+  },
+  "homepage": "https://yourusername.github.io/your-portfolio#readme",
+  "devDependencies": {
+    "browser-sync": "^2.29.3",
+    "clean-css-cli": "^5.6.2",
+    "eslint": "^8.57.0",
+    "gh-pages": "^6.1.1",
+    "html-validate": "^8.9.1",
+    "serve": "^14.2.1",
+    "stylelint": "^16.2.1",
+    "terser": "^5.27.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   }
 }

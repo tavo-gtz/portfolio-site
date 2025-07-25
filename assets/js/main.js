@@ -249,7 +249,7 @@ class ToledoPortfolio {
             setTimeout(() => {
                 // Update content
                 if (newContent.title) {
-                    const logo = content.querySelector('.logo');
+                    const logo = content.querySelector('.title');
                     if (logo) logo.textContent = newContent.title;
                 }
 

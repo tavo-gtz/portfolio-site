@@ -79,24 +79,54 @@ body {
     animation: fadeInUp 1s ease-out;
 }
 
-.title {
+/* Header Section with Profile Picture */
+.header-section {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    position: relative;
+    top: -80px;
+  }
+
+.profile-picture {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.profile-picture:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.name-tagline-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    justify-content: center;
+}
+
+.title{
     font-size: 30px;
     font-weight: 700;
     letter-spacing: -0.5px;
-    position: relative;
-    top: -100px;
-    margin-bottom: 20px;
+    margin: 0;
     color: var(--primary-color);
     font-family: var(--font-primary);
+    line-height: 1.2;
 }
 
 .tagline {
     font-size: 24px;
     font-weight: 300;
     line-height: 1.2;
-    position: relative;
-    top: -80px;
-    margin-bottom: 30px;
+    margin: 0;
     color: var(--primary-color);
     letter-spacing: -1px;
 }
@@ -327,15 +357,25 @@ body {
 @media (max-width: 1024px) {
     .left-panel {
         padding: 40px;
+        padding-top: 60px;
+    }
+
+    .header-section {
+        top: -30px;
+        gap: 25px;
+    }
+
+    .profile-picture {
+        width: 200px;
+        height: 200px;
     }
 
     .title {
-        top: -60px;
+        font-size: 28px;
     }
 
     .tagline {
-        font-size: 42px;
-        top: -40px;
+        font-size: 22px;
     }
 
 }
@@ -355,13 +395,32 @@ body {
         min-height: 40vh;
     }
 
-    .title {
+    .header-section {
         top: -20px;
+        gap: 20px;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .profile-picture {
+        width: 150px;
+        height: 150px;
+        order: 1;
+    }
+
+    .name-tagline-container {
+        align-items: center;
+        text-align: center;
+        order: 2;
+    }
+
+    .title {
+        font-size: 26px;
     }
 
     .tagline {
-        font-size: 36px;
-        top: -10px;
+        font-size: 20px;
     }
 
     .content {
@@ -401,21 +460,41 @@ body {
         padding: 30px 15px;
     }
 
+    .header-section {
+        top: 0;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .profile-picture {
+        width: 120px;
+        height: 120px;
+        order: 1;
+    }
+
+    .name-tagline-container {
+        align-items: center;
+        text-align: center;
+        order: 2;
+        gap: 8px;
+    }
+
     .title {
         font-size: 24px;
-        margin-bottom: 30px;
-        top: 0;
+        order: 1;
     }
 
     .tagline {
-        font-size: 28px;
-        margin-bottom: 20px;
-        top: 0;
+        font-size: 18px;
+        order: 2;
     }
 
     .description {
         font-size: 16px;
         margin-bottom: 30px;
+        text-align: center;
     }
 
     .btn {

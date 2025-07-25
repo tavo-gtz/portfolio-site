@@ -818,18 +818,3 @@ body {
         animation: none;
     }
 }
-
-
-/* DEBUG: Force hamburger menu on all screens under 800px */
-@media (max-width: 800px) {
-    .nav-links {
-        display: none !important;
-        background: red !important; /* This should be hidden anyway */
-    }
-
-    .hamburger {
-        display: flex !important;
-        background: lime !important; /* You should see a lime green background */
-        border: 2px solid red !important;
-    }
-}

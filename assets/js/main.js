@@ -1,317 +1,237 @@
 /**
- * Toledo Portfolio Template - Main JavaScript
- * Enhanced interactions and animations
+ * Octavio Gutierrez Portfolio - Fixed Back-to-Top Button
  */
 
-class ToledoPortfolio {
-    constructor() {
-        this.init();
+document.addEventListener('DOMContentLoaded', function() {
+    // Cache DOM elements
+    const elements = {
+        hamburgerBtn: document.getElementById('hamburgerBtn'),
+        mobileMenu: document.getElementById('mobileMenu'),
+        topNav: document.querySelector('.top-nav'),
+        navDots: document.querySelectorAll('.nav-dot'),
+        mobileNavLinks: document.querySelectorAll('.mobile-nav-link'),
+        navLinks: document.querySelectorAll('.nav-link'),
+        body: document.body,
+        backToTop: document.querySelector('.back-to-top')
+    };
+
+    const sections = ['home', 'about', 'blog'];
+    let navHidden = false;
+    let programmaticScrolling = false;
+    let lastScrollY = 0;
+    let scrollDirection = 'up';
+    let backToTopVisible = false;
+    let userScrolledUp = false;
+
+    // Mobile detection
+    const isMobile = () => window.innerWidth <= 768;
+
+    // Back-to-top button logic
+    function handleBackToTopVisibility() {
+        const scrollY = window.scrollY;
+        const documentHeight = document.documentElement.scrollHeight;
+        const windowHeight = window.innerHeight;
+        const scrollBottom = scrollY + windowHeight;
+
+        // Simple approach: Show when near bottom, hide when scrolled up significantly
+        const distanceFromBottom = documentHeight - scrollBottom;
+        const showThreshold = 50; // Show when within 50px of bottom
+        const hideThreshold = windowHeight * 0.10; // Hide when scrolled up 50% of viewport (reaches middle of card)
+
+        if (elements.backToTop) {
+            // Show button when near bottom
+            if (distanceFromBottom <= showThreshold && !programmaticScrolling) {
+                if (!backToTopVisible) {
+                    elements.backToTop.classList.add('visible');
+                    backToTopVisible = true;
+                }
+            }
+            // Hide button when scrolled up significantly (disappears around middle of card)
+            else if (distanceFromBottom > hideThreshold && backToTopVisible && !programmaticScrolling) {
+                elements.backToTop.classList.remove('visible');
+                backToTopVisible = false;
+            }
+        }
     }
 
-    init() {
-        this.setupEventListeners();
-        this.initParallax();
-        this.initFloatingNav();
-        this.initButtonEffects();
-        this.initIntersectionObserver();
-        this.initPreloader();
+    // CRITICAL FIX: Remove ALL scroll event interference
+    // Only handle navigation visibility with massive throttling
+    let scrollThrottle = null;
+    function minimalScrollHandler() {
+        // Clear any pending calls
+        if (scrollThrottle) return;
+
+        scrollThrottle = setTimeout(() => {
+            const scrollY = window.scrollY;
+
+            // Determine scroll direction
+            scrollDirection = scrollY > lastScrollY ? 'down' : 'up';
+            lastScrollY = scrollY;
+
+            // Simple nav hide/show with large buffer zones
+            if (scrollY > 300 && !navHidden) {
+                elements.topNav.classList.add('hidden');
+                navHidden = true;
+            } else if (scrollY < 150 && navHidden) {
+                elements.topNav.classList.remove('hidden');
+                navHidden = false;
+            }
+
+            // Update nav dots only when not programmatically scrolling
+            if (!programmaticScrolling) {
+                updateActiveNavDot();
+            }
+
+            // Handle back to top button visibility
+            handleBackToTopVisibility();
+
+            scrollThrottle = null;
+        }, 150); // Heavy throttling - 150ms delay
     }
 
-    setupEventListeners() {
-        // Wait for DOM to be fully loaded
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.onDOMReady());
+    // PASSIVE scroll listener - critical for performance
+    window.addEventListener('scroll', minimalScrollHandler, {
+        passive: true,
+        capture: false
+    });
+
+    // Simplified nav dot update
+    function updateActiveNavDot() {
+        const scrollPos = window.scrollY + 200;
+        let activeIndex = 0;
+
+        for (let i = sections.length - 1; i >= 0; i--) {
+            const section = document.getElementById(sections[i]);
+            if (section && scrollPos >= section.offsetTop) {
+                activeIndex = i;
+                break;
+            }
+        }
+
+        elements.navDots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === activeIndex);
+        });
+    }
+
+    // COMPLETELY NATIVE smooth scroll - no custom implementation
+    function scrollToSection(targetId) {
+        const target = document.getElementById(targetId);
+        if (!target) return;
+
+        programmaticScrolling = true;
+
+        // Reset back-to-top state when using button
+        if (targetId === 'home' && backToTopVisible) {
+            userScrolledUp = false;
+            backToTopVisible = false;
+            elements.backToTop.classList.remove('visible');
+        }
+
+        // Use native browser scrolling
+        target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+
+        // Reset flag after scroll animation
+        setTimeout(() => {
+            programmaticScrolling = false;
+        }, 1500);
+    }
+
+    // Mobile menu functions - simplified
+    function toggleMobileMenu() {
+        const isActive = elements.mobileMenu.classList.contains('active');
+        const scrollY = window.scrollY;
+
+        elements.hamburgerBtn.classList.toggle('active');
+        elements.mobileMenu.classList.toggle('active');
+
+        if (!isActive) {
+            elements.body.style.position = 'fixed';
+            elements.body.style.top = `-${scrollY}px`;
+            elements.body.style.width = '100%';
         } else {
-            this.onDOMReady();
-        }
-
-        // Handle window resize
-        window.addEventListener('resize', this.debounce(this.handleResize.bind(this), 250));
-
-        // Handle scroll for mobile
-        window.addEventListener('scroll', this.debounce(this.handleScroll.bind(this), 16));
-    }
-
-    onDOMReady() {
-        console.log('Toledo Portfolio initialized');
-        this.addLoadedClass();
-    }
-
-    addLoadedClass() {
-        document.body.classList.add('loaded');
-    }
-
-    initParallax() {
-        const heroImage = document.querySelector('.hero-image');
-        const parallaxBg = document.querySelector('.parallax-bg');
-
-        if (!heroImage || !parallaxBg) return;
-
-        // Parallax effect on mouse move (desktop only)
-        if (window.innerWidth > 768) {
-            document.addEventListener('mousemove', (e) => {
-                const mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-                const mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-
-                // Subtle parallax for background pattern
-                parallaxBg.style.transform = `translate(${mouseX * 5}px, ${mouseY * 5}px)`;
-
-                // Subtle image movement
-                heroImage.style.transform = `scale(1.05) translate(${mouseX * 3}px, ${mouseY * 3}px)`;
-            });
-
-            // Reset on mouse leave
-            document.addEventListener('mouseleave', () => {
-                parallaxBg.style.transform = 'translate(0, 0)';
-                heroImage.style.transform = 'scale(1.05)';
-            });
+            elements.body.style.position = '';
+            elements.body.style.top = '';
+            elements.body.style.width = '';
+            window.scrollTo(0, scrollY);
         }
     }
 
-    initFloatingNav() {
-        const navDots = document.querySelectorAll('.nav-dot');
+    function closeMobileMenu() {
+        if (!elements.mobileMenu.classList.contains('active')) return;
 
-        navDots.forEach((dot, index) => {
-            dot.addEventListener('click', () => {
-                // Update active state
-                navDots.forEach(d => d.classList.remove('active'));
-                dot.classList.add('active');
+        const scrollY = parseInt(elements.body.style.top || '0') * -1;
 
-                // Add click animation
-                dot.style.transform = 'scale(1.5)';
-                setTimeout(() => {
-                    dot.style.transform = dot.classList.contains('active') ? 'scale(1.3)' : 'scale(1)';
-                }, 150);
+        elements.hamburgerBtn.classList.remove('active');
+        elements.mobileMenu.classList.remove('active');
+        elements.body.style.position = '';
+        elements.body.style.top = '';
+        elements.body.style.width = '';
 
-                // Trigger haptic feedback on supported devices
-                if ('vibrate' in navigator) {
-                    navigator.vibrate(50);
-                }
-            });
-
-            // Enhanced hover effects
-            dot.addEventListener('mouseenter', () => {
-                if (!dot.classList.contains('active')) {
-                    dot.style.transform = 'scale(1.2)';
-                }
-            });
-
-            dot.addEventListener('mouseleave', () => {
-                if (!dot.classList.contains('active')) {
-                    dot.style.transform = 'scale(1)';
-                }
-            });
-        });
+        window.scrollTo(0, scrollY);
     }
 
-    initButtonEffects() {
-        const buttons = document.querySelectorAll('.btn');
+    // EVENT LISTENERS - Minimal and clean
 
-        buttons.forEach(btn => {
-            // Enhanced hover effects
-            btn.addEventListener('mouseenter', () => {
-                btn.style.transform = 'translateY(-3px)';
-            });
-
-            btn.addEventListener('mouseleave', () => {
-                btn.style.transform = 'translateY(0)';
-            });
-
-            // Click effect
-            btn.addEventListener('mousedown', () => {
-                btn.style.transform = 'translateY(-1px) scale(0.98)';
-            });
-
-            btn.addEventListener('mouseup', () => {
-                btn.style.transform = 'translateY(-3px) scale(1)';
-            });
-
-            // Keyboard accessibility
-            btn.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    btn.click();
-                }
-            });
-        });
-
-        // Enhanced social link effects
-        const socialLinks = document.querySelectorAll('.social-link');
-        socialLinks.forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                link.style.transform = 'translateY(-2px)';
-            });
-
-            link.addEventListener('mouseleave', () => {
-                link.style.transform = 'translateY(0)';
-            });
-        });
+    // Mobile hamburger
+    if (elements.hamburgerBtn) {
+        elements.hamburgerBtn.addEventListener('click', toggleMobileMenu);
     }
 
-    initIntersectionObserver() {
-        // Animate elements when they come into view
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+    // Nav dots - simple click handling
+    elements.navDots.forEach((dot, index) => {
+        dot.addEventListener('click', (e) => {
+            e.preventDefault();
+            scrollToSection(sections[index]);
+        });
+    });
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-in');
-
-                    // Start any paused animations
-                    if (entry.target.style.animationPlayState === 'paused') {
-                        entry.target.style.animationPlayState = 'running';
-                    }
-                }
-            });
-        }, observerOptions);
-
-        // Observe main content elements
-        const elementsToObserve = [
-            '.content',
-            '.hero-image',
-            '.social-links'
-        ];
-
-        elementsToObserve.forEach(selector => {
-            const element = document.querySelector(selector);
-            if (element) {
-                observer.observe(element);
+    // Desktop nav links
+    elements.navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (href?.startsWith('#')) {
+                e.preventDefault();
+                scrollToSection(href.substring(1));
             }
         });
-    }
+    });
 
-    initPreloader() {
-        // Simple preloader for hero image
-        const heroImage = document.querySelector('.hero-image');
-        if (heroImage) {
-            const imageLoader = new Image();
-            imageLoader.onload = () => {
-                heroImage.style.opacity = '1';
-                heroImage.classList.add('loaded');
-            };
-            imageLoader.src = heroImage.src;
-        }
-    }
-
-    handleResize() {
-        // Handle responsive adjustments
-        const isMobile = window.innerWidth <= 768;
-        const floatingNav = document.querySelector('.floating-nav');
-
-        if (floatingNav) {
-            floatingNav.style.display = isMobile ? 'none' : 'flex';
-        }
-
-        // Reset parallax transforms on resize
-        const parallaxBg = document.querySelector('.parallax-bg');
-        const heroImage = document.querySelector('.hero-image');
-
-        if (parallaxBg) parallaxBg.style.transform = 'translate(0, 0)';
-        if (heroImage) heroImage.style.transform = 'scale(1.05)';
-    }
-
-    handleScroll() {
-        // Add scroll-based effects for mobile
-        if (window.innerWidth <= 768) {
-            const scrolled = window.pageYOffset;
-            const parallaxBg = document.querySelector('.parallax-bg');
-
-            if (parallaxBg) {
-                parallaxBg.style.transform = `translateY(${scrolled * 0.1}px)`;
+    // Mobile nav links
+    elements.mobileNavLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (href?.startsWith('#')) {
+                e.preventDefault();
+                closeMobileMenu();
+                setTimeout(() => scrollToSection(href.substring(1)), 300);
+            } else {
+                closeMobileMenu();
             }
-        }
+        });
+    });
+
+    // Escape key to close mobile menu
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMobileMenu();
+    });
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) closeMobileMenu();
+    });
+
+    // Back to top functionality
+    if (elements.backToTop) {
+        elements.backToTop.addEventListener('click', () => {
+            scrollToSection('home');
+        });
     }
 
-    // Utility function for debouncing
-    debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
+    // Initialize nav dots
+    setTimeout(updateActiveNavDot, 100);
 
-    // Public method to update content dynamically
-    updateContent(newContent) {
-        const content = document.querySelector('.content');
-        if (content && newContent) {
-            // Fade out
-            content.style.opacity = '0';
-            content.style.transform = 'translateY(20px)';
-
-            setTimeout(() => {
-                // Update content
-                if (newContent.title) {
-                    const logo = content.querySelector('.title');
-                    if (logo) logo.textContent = newContent.title;
-                }
-
-                if (newContent.tagline) {
-                    const tagline = content.querySelector('.tagline');
-                    if (tagline) tagline.textContent = newContent.tagline;
-                }
-
-                if (newContent.description) {
-                    const description = content.querySelector('.description');
-                    if (description) description.textContent = newContent.description;
-                }
-
-                // Fade in
-                content.style.opacity = '1';
-                content.style.transform = 'translateY(0)';
-            }, 300);
-        }
-    }
-
-    // Error handling for missing elements
-    safeQuerySelector(selector) {
-        const element = document.querySelector(selector);
-        if (!element) {
-            console.warn(`Element not found: ${selector}`);
-        }
-        return element;
-    }
-}
-
-// Initialize the portfolio when the script loads
-const portfolio = new ToledoPortfolio();
-
-// Export for potential use in other scripts
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = ToledoPortfolio;
-}
-
-// Add some CSS classes dynamically for enhanced animations
-const style = document.createElement('style');
-style.textContent = `
-    .animate-in {
-        animation: slideInUp 0.6s ease-out forwards;
-    }
-
-    @keyframes slideInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .loaded .hero-image {
-        transition: opacity 0.5s ease-in-out;
-    }
-
-    .hero-image:not(.loaded) {
-        opacity: 0;
-    }
-`;
-document.head.appendChild(style);
+    console.log('Portfolio initialized - Fixed back-to-top button');
+});

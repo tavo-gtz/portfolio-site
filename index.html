@@ -54,12 +54,9 @@
     </ul>
 </div>
 
-<!-- Menu Overlay -->
-<div class="menu-overlay" id="menuOverlay"></div>
-
 <div class="container">
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section class="hero-section" id="home">
         <div class="parallax-bg"></div>
 
         <div class="main-content">
@@ -81,10 +78,6 @@
                 a digital mental health platform designed to empower individuals and underserved communities through
                 accessible, secure, and developer-friendly tools.
             </p>
-
-            <div class="cta-buttons">
-                <!-- Moved to TheraLink section -->
-            </div>
         </div>
     </section>
 
@@ -95,7 +88,7 @@
             <p class="coming-soon">Coming Soon</p>
 
             <div class="cta-buttons" style="margin-top: 40px;">
-                <a href="https://trytheralink.com" class="btn btn-primary" target="_blank" rel="noopener noreferrer">View Recent Work</a>
+                <a href="https://trytheralink.com" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Explore TheraLink</a>
             </div>
         </div>
     </section>
@@ -103,7 +96,7 @@
     <!-- Blog Section -->
     <section class="blog-section" id="blog">
         <div class="blog-content">
-            <h2 class="section-title">Latest Articles</h2>
+            <h2 class="section-title">Latest Essays & Articles</h2>
 
             <div class="blog-grid">
                 <article class="blog-card">
@@ -215,160 +208,10 @@
     <div class="nav-dot" data-section="Blog"></div>
 </div>
 
+<!-- Back to Top Button -->
+<div class="back-to-top"></div>
+
 <!-- Scripts -->
 <script src="assets/js/main.js"></script>
-<script>
-    // Enhanced Hamburger Menu JavaScript with scroll prevention
-    document.addEventListener('DOMContentLoaded', function() {
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const menuOverlay = document.getElementById('menuOverlay');
-        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-        const topNav = document.querySelector('.top-nav');
-        const navDots = document.querySelectorAll('.nav-dot');
-        const sections = ['hero-section', 'about-theralink-section', 'blog-section'];
-        const body = document.body;
-        let lastScrollY = window.scrollY;
-        let scrollPosition = 0;
-
-        // Hide/Show navigation on scroll
-        function handleScroll() {
-            const currentScrollY = window.scrollY;
-
-            if (currentScrollY > 50) {
-                // Hide navigation when scrolled down more than 50px
-                topNav.classList.add('hidden');
-            } else {
-                // Only show navigation when at the very top (within 50px)
-                topNav.classList.remove('hidden');
-            }
-
-            // Update active dot based on scroll position
-            updateActiveDot();
-
-            lastScrollY = currentScrollY;
-        }
-
-        // Update active navigation dot based on scroll position
-        function updateActiveDot() {
-            const scrollPosition = window.scrollY + window.innerHeight / 2;
-
-            sections.forEach((sectionClass, index) => {
-                const section = document.querySelector(`.${sectionClass}`);
-                if (section) {
-                    const sectionTop = section.offsetTop;
-                    const sectionBottom = sectionTop + section.offsetHeight;
-
-                    if (scrollPosition >= sectionTop && scrollPosition <= sectionBottom) {
-                        navDots.forEach(dot => dot.classList.remove('active'));
-                        navDots[index].classList.add('active');
-                    }
-                }
-            });
-        }
-
-        // Smooth scroll to section when clicking nav dots
-        navDots.forEach((dot, index) => {
-            dot.addEventListener('click', () => {
-                const targetSection = document.querySelector(`.${sections[index]}`);
-                if (targetSection) {
-                    targetSection.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Prevent background scrolling when menu is open
-        function disableScroll() {
-            scrollPosition = window.pageYOffset;
-            body.classList.add('menu-open');
-            body.style.top = `-${scrollPosition}px`;
-        }
-
-        // Re-enable scrolling when menu is closed
-        function enableScroll() {
-            body.classList.remove('menu-open');
-            body.style.removeProperty('top');
-            window.scrollTo(0, scrollPosition);
-        }
-
-        // Toggle mobile menu with scroll prevention
-        function toggleMenu() {
-            const isMenuActive = mobileMenu.classList.contains('active');
-
-            hamburgerBtn.classList.toggle('active');
-            mobileMenu.classList.toggle('active');
-
-            if (!isMenuActive) {
-                // Menu is opening
-                disableScroll();
-            } else {
-                // Menu is closing
-                enableScroll();
-            }
-        }
-
-        // Close mobile menu and re-enable scrolling
-        function closeMenu() {
-            hamburgerBtn.classList.remove('active');
-            mobileMenu.classList.remove('active');
-            enableScroll();
-        }
-
-        // Event listeners
-        hamburgerBtn.addEventListener('click', toggleMenu);
-        window.addEventListener('scroll', handleScroll);
-
-        // Close menu when clicking on nav links
-        mobileNavLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                // Handle smooth scrolling for anchor links
-                const href = link.getAttribute('href');
-                if (href && href.startsWith('#')) {
-                    e.preventDefault();
-                    const targetSection = document.querySelector(href);
-                    if (targetSection) {
-                        closeMenu();
-                        // Add small delay to allow menu animation to complete
-                        setTimeout(() => {
-                            targetSection.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        }, 300);
-                    }
-                } else {
-                    closeMenu();
-                }
-            });
-        });
-
-        // Close menu on escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
-                closeMenu();
-            }
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
-                closeMenu();
-            }
-        });
-
-        // Prevent scrolling with touch events when menu is open
-        document.addEventListener('touchmove', function(e) {
-            if (body.classList.contains('menu-open')) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-
-        // Initialize active dot on page load
-        updateActiveDot();
-    });
-</script>
 </body>
 </html>

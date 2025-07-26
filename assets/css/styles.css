@@ -388,7 +388,7 @@ body {
 }
 
 .copyright-text {
-    font-size: 14px;
+    font-size: 10px;
     color: rgba(102, 102, 102, 0.7);
     font-weight: 400;
     letter-spacing: 0.3px;
@@ -880,7 +880,7 @@ body {
     }
 
     .copyright-text {
-        font-size: 13px;
+        font-size: 10px;
     }
 
     /* Show hamburger menu on tablet and below */
@@ -1015,7 +1015,7 @@ body {
     }
 
     .copyright-text {
-        font-size: 12px;
+        font-size: 9px;
     }
 }
 
@@ -1091,7 +1091,7 @@ body {
     }
 
     .copyright-text {
-        font-size: 11px;
+        font-size: 8px;
     }
 }
 

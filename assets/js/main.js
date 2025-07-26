@@ -230,6 +230,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Force scroll to top on page load/refresh
+    window.addEventListener('beforeunload', () => {
+        window.scrollTo(0, 0);
+    });
+
+    // Additional scroll to top on page load
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            window.scrollTo(0, 0);
+        }, 100);
+    });
+
+    // Force scroll to top immediately
+    if (window.history.scrollRestoration) {
+        window.history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+
     // Initialize nav dots
     setTimeout(updateActiveNavDot, 100);
 

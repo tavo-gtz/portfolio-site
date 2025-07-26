@@ -26,6 +26,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mobile detection
     const isMobile = () => window.innerWidth <= 768;
 
+    // Navigation dots visibility functions
+        function showNavDots() {
+            if (elements.floatingNav && !navDotsVisible) {
+                elements.floatingNav.classList.add('visible');
+                navDotsVisible = true;
+            }
+        }
+
+        function hideNavDots() {
+            if (elements.floatingNav && navDotsVisible) {
+                elements.floatingNav.classList.remove('visible');
+                navDotsVisible = false;
+            }
+        }
+
     // Back-to-top button logic
     function handleBackToTopVisibility() {
         const scrollY = window.scrollY;
@@ -250,6 +265,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize nav dots
     setTimeout(updateActiveNavDot, 100);
+
+    // Update copyright year dynamically
+        function updateCopyrightYear() {
+            const currentYear = new Date().getFullYear();
+            const copyrightElement = document.querySelector('.copyright-text');
+
+            if (copyrightElement) {
+                if (currentYear > 2024) {
+                    copyrightElement.textContent = `Copyright © 2024 - ${currentYear} Octavio Gutierrez · All Rights Reserved`;
+                }
+            }
+        }
+
+        // Update on page load
+        updateCopyrightYear();
+
+    // Optional: Update every minute to catch year changes
+    setInterval(updateCopyrightYear, 60000);
 
     console.log('Portfolio initialized - Fixed back-to-top button');
 });

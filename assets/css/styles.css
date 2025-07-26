@@ -108,7 +108,7 @@ body {
     height: 200px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid var(--primary-color);
+    border: 1px solid var(--primary-color);
     aspect-ratio: 1;
     display: block;
     margin: 0 auto;
@@ -270,7 +270,7 @@ body {
 /* Blog Section */
 .blog-section {
     background: var(--background-light);
-    padding: 80px 0;
+    padding: 80px 0 40px 0;
     text-align: center;
     width: 100%;
 }
@@ -361,6 +361,39 @@ body {
 
 .read-more:hover::after {
     transform: translateX(5px);
+}
+
+/* Copyright Footer */
+.copyright-footer {
+    background: var(--background-light);
+    padding: 20px 0 40px 0;
+    width: 100%;
+
+}
+
+.copyright-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    gap: 5px;
+}
+
+.copyright-line {
+    width: 100%;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.copyright-text {
+    font-size: 14px;
+    color: rgba(102, 102, 102, 0.7);
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    margin: 0;
+    text-align: left;
 }
 
 /* FIXED Navigation - Upper Right Corner */
@@ -601,7 +634,7 @@ body {
 /* Back to Top Button - Fixed positioning and mobile centering */
 .back-to-top {
     position: fixed;
-    bottom: 30px;
+    bottom: 110px;
     right: 30px;
     width: 45px;
     height: 45px;
@@ -697,6 +730,11 @@ body {
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 30px;
     }
+
+    .copyright-content {
+        padding: 0 15px;
+        gap: 5px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -711,13 +749,16 @@ body {
         overscroll-behavior: contain;
     }
 
-    /* Add padding to last section to ensure space for button */
     .blog-section {
-        padding: 60px 0 80px 0; /* Reduced bottom padding for closer spacing */
+            padding: 60px 0 20px 0; /* Reduce bottom padding */
+    }
+
+    .copyright-footer {
+        padding: 60px 0 30px 0;
     }
 
     .back-to-top {
-        bottom: 20px;
+        bottom: 90px;
         right: 50%;
         transform: translateX(50%) translateY(10px);
         width: 40px;
@@ -833,6 +874,15 @@ body {
         padding: 25px;
     }
 
+    .copyright-content {
+        padding: 0 15px;
+        gap: 5px;
+    }
+
+    .copyright-text {
+        font-size: 13px;
+    }
+
     /* Show hamburger menu on tablet and below */
     .top-nav .nav-links {
         display: none;
@@ -844,13 +894,17 @@ body {
 }
 
 @media (max-width: 480px) {
-    /* Ensure enough space at bottom on smaller screens */
+
     .blog-section {
-        padding: 50px 0 70px 0; /* Reduced bottom padding */
+        padding: 50px 0 15px 0; /* Reduce bottom padding */
+    }
+
+    .copyright-footer {
+        padding: 50px 0 25px 0; /* Extra bottom padding */
     }
 
     .back-to-top {
-        bottom: 15px;
+        bottom: 75px;
         right: 50%;
         transform: translateX(50%) translateY(10px);
         width: 38px;
@@ -954,15 +1008,29 @@ body {
     .blog-card {
         padding: 20px;
     }
+
+    .copyright-content {
+        padding: 0 10px;
+        gap: 5px;
+    }
+
+    .copyright-text {
+        font-size: 12px;
+    }
 }
 
 @media (max-width: 320px) {
+
     .blog-section {
-        padding: 50px 0 65px 0; /* Reduced bottom padding */
+            padding: 50px 0 10px 0; /* Reduce bottom padding */
+    }
+
+    .copyright-footer {
+        padding: 45px 0 20px 0;
     }
 
     .back-to-top {
-        bottom: 12px;
+        bottom: 65px;
         width: 36px;
         height: 36px;
     }
@@ -1016,12 +1084,25 @@ body {
         padding: 10px 0;
         min-width: 160px;
     }
+
+    .copyright-content {
+        padding: 0 5px;
+        gap: 5px;
+    }
+
+    .copyright-text {
+        font-size: 11px;
+    }
 }
 
 /* Print Styles */
 @media print {
     .floating-nav {
         display: none;
+    }
+
+    .copyright-footer {
+        padding: 20px 0;
     }
 }
 
@@ -1032,6 +1113,10 @@ body {
         --secondary-color: #333;
         --background-light: #fff;
         --background-dark: #f0f0f0;
+    }
+
+    .copyright-text {
+        color: rgba(51, 51, 51, 0.8);
     }
 }
 

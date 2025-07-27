@@ -1,5 +1,5 @@
 /**
- * Octavio Gutierrez Portfolio - Fixed Back-to-Top Button
+ * Octavio Gutierrez Portfolio - Enhanced with Mobile Menu UX Improvements
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -12,7 +12,11 @@ document.addEventListener('DOMContentLoaded', function() {
         mobileNavLinks: document.querySelectorAll('.mobile-nav-link'),
         navLinks: document.querySelectorAll('.nav-link'),
         body: document.body,
-        backToTop: document.querySelector('.back-to-top')
+        backToTop: document.querySelector('.back-to-top'),
+        floatingNav: document.querySelector('.floating-nav'),
+        // Mobile menu contact links
+        contactLinks: document.querySelectorAll('a[href*="linkedin.com"], .mobile-contact-link'),
+        linkedinIcons: document.querySelectorAll('.mobile-linkedin-svg-icon')
     };
 
     const sections = ['home', 'about', 'blog'];
@@ -22,24 +26,25 @@ document.addEventListener('DOMContentLoaded', function() {
     let scrollDirection = 'up';
     let backToTopVisible = false;
     let userScrolledUp = false;
+    let navDotsVisible = false;
 
     // Mobile detection
     const isMobile = () => window.innerWidth <= 768;
 
     // Navigation dots visibility functions
-        function showNavDots() {
-            if (elements.floatingNav && !navDotsVisible) {
-                elements.floatingNav.classList.add('visible');
-                navDotsVisible = true;
-            }
+    function showNavDots() {
+        if (elements.floatingNav && !navDotsVisible) {
+            elements.floatingNav.classList.add('visible');
+            navDotsVisible = true;
         }
+    }
 
-        function hideNavDots() {
-            if (elements.floatingNav && navDotsVisible) {
-                elements.floatingNav.classList.remove('visible');
-                navDotsVisible = false;
-            }
+    function hideNavDots() {
+        if (elements.floatingNav && navDotsVisible) {
+            elements.floatingNav.classList.remove('visible');
+            navDotsVisible = false;
         }
+    }
 
     // Back-to-top button logic
     function handleBackToTopVisibility() {
@@ -154,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1500);
     }
 
-    // Mobile menu functions - simplified
+    // Mobile menu functions - enhanced with UX improvements
     function toggleMobileMenu() {
         const isActive = elements.mobileMenu.classList.contains('active');
         const scrollY = window.scrollY;
@@ -171,6 +176,8 @@ document.addEventListener('DOMContentLoaded', function() {
             elements.body.style.top = '';
             elements.body.style.width = '';
             window.scrollTo(0, scrollY);
+            // Clear hover states when closing
+            clearMobileMenuHoverStates();
         }
     }
 
@@ -186,14 +193,56 @@ document.addEventListener('DOMContentLoaded', function() {
         elements.body.style.width = '';
 
         window.scrollTo(0, scrollY);
+
+        // Clear hover states when closing
+        clearMobileMenuHoverStates();
     }
 
-    // EVENT LISTENERS - Minimal and clean
+    // NEW: Clear mobile menu hover states
+    function clearMobileMenuHoverStates() {
+        // Reset LinkedIn icon colors to default
+        elements.linkedinIcons.forEach(icon => {
+            icon.style.fill = 'var(--primary-color)';
+        });
+
+        // Remove any potential stuck hover classes
+        const hoverElements = document.querySelectorAll('.mobile-nav-link, .mobile-contact-nav-item');
+        hoverElements.forEach(el => {
+            el.classList.remove('hover', 'active', 'focus');
+        });
+    }
+
+    // NEW: Reset mobile menu state when page regains focus
+    function resetMobileMenuState() {
+        closeMobileMenu();
+        clearMobileMenuHoverStates();
+    }
+
+    // EVENT LISTENERS - Enhanced with mobile menu UX improvements
 
     // Mobile hamburger
     if (elements.hamburgerBtn) {
         elements.hamburgerBtn.addEventListener('click', toggleMobileMenu);
     }
+
+    // NEW: Auto-close mobile menu when external contact links are clicked
+    elements.contactLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            // Close menu immediately when external links are clicked
+            closeMobileMenu();
+        });
+    });
+
+    // NEW: Close mobile menu when clicking outside of it
+    document.addEventListener('click', (e) => {
+        const isMenuOpen = elements.mobileMenu && elements.mobileMenu.classList.contains('active');
+        const clickedInsideMenu = elements.mobileMenu && elements.mobileMenu.contains(e.target);
+        const clickedHamburger = elements.hamburgerBtn && elements.hamburgerBtn.contains(e.target);
+
+        if (isMenuOpen && !clickedInsideMenu && !clickedHamburger) {
+            closeMobileMenu();
+        }
+    });
 
     // Nav dots - simple click handling
     elements.navDots.forEach((dot, index) => {
@@ -228,14 +277,35 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Escape key to close mobile menu
+    // Enhanced Escape key handler
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeMobileMenu();
+        if (e.key === 'Escape') {
+            closeMobileMenu();
+        }
     });
 
     // Resize handler
     window.addEventListener('resize', () => {
-        if (window.innerWidth > 768) closeMobileMenu();
+        if (window.innerWidth > 768) {
+            closeMobileMenu();
+        }
+    });
+
+    // NEW: Reset mobile menu state when page regains focus (user returns from external link)
+    window.addEventListener('focus', () => {
+        resetMobileMenuState();
+    });
+
+    // NEW: Reset mobile menu state when page becomes visible again
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            resetMobileMenuState();
+        }
+    });
+
+    // NEW: Reset mobile menu state on page load/reload
+    window.addEventListener('load', () => {
+        resetMobileMenuState();
     });
 
     // Back to top functionality
@@ -267,22 +337,22 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(updateActiveNavDot, 100);
 
     // Update copyright year dynamically
-        function updateCopyrightYear() {
-            const currentYear = new Date().getFullYear();
-            const copyrightElement = document.querySelector('.copyright-text');
+    function updateCopyrightYear() {
+        const currentYear = new Date().getFullYear();
+        const copyrightElement = document.querySelector('.copyright-text');
 
-            if (copyrightElement) {
-                if (currentYear > 2024) {
-                    copyrightElement.textContent = `Copyright © 2024 - ${currentYear} Octavio Gutierrez · All Rights Reserved`;
-                }
+        if (copyrightElement) {
+            if (currentYear > 2024) {
+                copyrightElement.textContent = `Copyright © 2024 - ${currentYear} Octavio Gutierrez · All Rights Reserved`;
             }
         }
+    }
 
-        // Update on page load
-        updateCopyrightYear();
+    // Update on page load
+    updateCopyrightYear();
 
     // Optional: Update every minute to catch year changes
     setInterval(updateCopyrightYear, 60000);
 
-    console.log('Portfolio initialized - Fixed back-to-top button');
+    console.log('Portfolio initialized - Enhanced mobile menu UX with auto-close and state reset');
 });
